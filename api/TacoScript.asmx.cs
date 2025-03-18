@@ -4,6 +4,11 @@ using System.Linq;
 using System.Web;
 using System.Web.Services;
 using TacoScript.ClassLibs;
+using System.Web.Configuration;
+using System.Data.SqlClient;
+using System.Configuration;
+using System.Data.Odbc;
+using System.Web.UI.WebControls;
 
 namespace TacoScript.api
 {
@@ -98,7 +103,11 @@ namespace TacoScript.api
             
             RowObject row = inputObject.Forms[0].CurrentRow;
 
-            string sourCream = null;
+            FieldObject textField = new FieldObject();
+            RowObject textRow = new RowObject();
+            FormObject textForm = new FormObject();
+
+            string sourCream = null; //string textBoxField = null;
             foreach (FieldObject field in row.Fields)
             {
                 switch (field.FieldNumber)
@@ -106,13 +115,66 @@ namespace TacoScript.api
                     case "948.3":
                         sourCream = field.FieldValue;
                         break;
+                    case "948.27":
+                        textField = field;
+                        textRow.RowId = row.RowId;
+                        textForm.FormId = inputObject.Forms[0].FormId;
+                        textForm.MultipleIteration = inputObject.Forms[0].MultipleIteration;
+                        break;
+
+
                 }
             }
 
-            returnObject.ErrorCode = 1;
-            returnObject.ErrorMesg = sourCream;
+            try
+            {
+                var something = PullSomething();
+
+                textField.FieldValue = something[0];
+                textRow.Fields = new List<FieldObject>() { textField }; //new FieldObject[1];
+                textRow.RowAction = "EDIT";
+                textForm.CurrentRow = textRow;
+                textForm.CurrentRow.ParentRowId = "0";
+
+                returnObject.Forms = new List<FormObject>() { textForm };
+            }
+
+            catch (ArgumentNullException)
+            {
+                returnObject.ErrorCode = 1;
+                returnObject.ErrorMesg = "whoopsie";
+
+            }
+
+            //returnObject.ErrorCode = 1;
+            //returnObject.ErrorMesg = sourCream;
 
             return returnObject;
+        }
+
+        private static List<string> PullSomething()
+        {
+            var something = new List<string>();
+            var connectionString = ConfigurationManager.ConnectionStrings["SQLMIS"].ConnectionString;
+
+            var commandText = $@"SELECT guarantor_name WHERE guarantor_id = '4000' FROM DataWarehouse.guarantor";
+
+            using (var connection = new OdbcConnection(connectionString))
+            {
+                connection.Open();
+                using (var command = new OdbcCommand(commandText, connection))
+                {
+                    using (var reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            something.Add(reader[0].ToString());
+                        }
+                    }
+                }
+                connection.Close();
+            }
+            return something;
         }
     }
 }
