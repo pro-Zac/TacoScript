@@ -26,7 +26,7 @@ namespace TacoScript.api
         [WebMethod]
         public string GetVersion()
         {
-            return "2025.01.24";
+            return "2025.04.22"; // i change this to be the date of the last script modification. can check this against previous dates in github
         }
 
         // the actual Method()s you call for your scripts live here vvv This section must be RunScript(), and will contain (OptionObject2015 inputObject, string parameter) args
@@ -71,8 +71,6 @@ namespace TacoScript.api
         /* a ScriptLink function executes a Method() based on an OptionObject2015 class. This will eventually make more sense, but if you want to 
          * create your own scripts, follow this format
          * private static [these can be left as is for now] OptionObject2015 YourMethod(OptionObject2015 inputObject) */
-
-
         private static OptionObject2015 ConfigureTaco(OptionObject2015 inputObject)
         {
             // invokes CopyObject() method to copy inputObject back to ReturnObject. copy verbatim
@@ -146,6 +144,41 @@ namespace TacoScript.api
                 }
             }
 
+            string taco;
+            bool isAHorriblePerson = false; // we set this variable as flase initially so we can construct our logic below, if not, we would get an error for using an unassigned variable. mA will overwrite the initially assigned false value with whatever is returned from the form when the script is called
+
+            // string vars need to equal the dictionary code in myAvatar, not the dictionary value, so we have to redefine these in the present scope. 
+            if (sourCream == "5")
+            {
+                isAHorriblePerson = true;
+            }
+            if (sourCream == "10")
+            {
+                isAHorriblePerson = false;
+            }
+            // if a field in a form is empty, it does not rerun as null, it returns as empty in C#, which can be calulated
+            if (string.IsNullOrEmpty(sourCream))
+            {
+                isAHorriblePerson = false;
+            }
+
+            if (isAHorriblePerson)
+            {
+                if (likeTacos == "5")
+                {
+                    // $ denotes an interpolated string. you can add your variables with curly braces around them 
+                    taco = $"Horrible human being {clientNameField.FieldValue} wants one taco with {tacoToppings}, {cheese}, and sour cream.";
+                }   
+            }
+            // !variableName is the shorthand for != or == false for bools
+            if (!isAHorriblePerson)
+            {
+                if (likeTacos == "5")
+                {
+                    taco = $"Morally upstanding pillar of righteousness, {clientNameField.FieldValue} wants one taco with {tacoToppings}, {cheese}, and NO SOUR CREAM.";
+                }
+            }
+
             return returnObject;
         }
 
@@ -156,11 +189,13 @@ namespace TacoScript.api
             OptionObject2015 returnObject = CopyObject(inputObject); 
             RowObject row = inputObject.Forms[0].CurrentRow;
 
+            // same as above. we instantiate Field, Row, and Form Objects for the element we wish to modify with ScriptLink.
             FieldObject textField = new FieldObject();
             RowObject textRow = new RowObject();
             FormObject textForm = new FormObject();
 
-            string clientID = inputObject.EntityID; // this is the ID for the currently selected client i
+            // this is the ID for the currently selected client
+            string clientID = inputObject.EntityID; 
 
             foreach (FieldObject field in row.Fields)
             {
@@ -177,10 +212,12 @@ namespace TacoScript.api
 
             try
             {
-                var something = PullSomething();
+                // invokes PullSomething() as defined below on current clientID
+                List<string> something = PullSomething(clientID);
 
-                textField.FieldValue = something[0];
-                textRow.Fields = new List<FieldObject>() { textField }; //new FieldObject[1];
+                // push each string in List<string> something to textField 
+                textField.FieldValue = something[0] + something[1] + something[2] + something[3] + something[4];
+                textRow.Fields = new List<FieldObject>() { textField }; 
                 textRow.RowAction = "EDIT";
                 textForm.CurrentRow = textRow;
                 textForm.CurrentRow.ParentRowId = "0";
@@ -188,11 +225,12 @@ namespace TacoScript.api
                 returnObject.Forms = new List<FormObject>() { textForm };
             }
 
+            // catch in case something doesn't work right
             catch (ArgumentNullException)
             {
                 returnObject.ErrorCode = 1;
-                returnObject.ErrorMesg = "whoopsie";
-
+                returnObject.ErrorMesg = "whoopsie, something went wrong!";
+                return returnObject;
             }
 
             return returnObject;
@@ -201,7 +239,7 @@ namespace TacoScript.api
         // Method to require feilds in a form. Fields are identified in the foreach() loop by field number.
         private static OptionObject2015 RequireField(OptionObject2015 inputObject)
         {
-            // invokes CopyObject() method to copy inputObject back to ReturnObject
+            // invokes CopyObject() method to copy inputObject back to ReturnObject and RowObject row to identify the data we're modifying as the current data row in the database
             OptionObject2015 returnObject = CopyObject(inputObject);
             RowObject row = inputObject.Forms[0].CurrentRow;
 
@@ -214,6 +252,7 @@ namespace TacoScript.api
             {
                 switch (field.FieldNumber)
                 {
+                    // same as above. for any field we want to modify with ScriptLink, we define as such below
                     case "948.26":
                         dobField = field;
                         dobRow.RowId = row.RowId;
@@ -226,7 +265,7 @@ namespace TacoScript.api
             // this is really all you have to do to require a field. There is no other Method to call or anything else to return but the returnObject
             dobField.Enabled = "1"; // enables the field. 1 == true and 0 == false
             dobField.Required = "1"; // requires. same as above
-            // dobField.FieldValue = this is where you can give a field a different value based on another variable
+            // dobField.FieldValue = this is where you can give a field a different value based on another variable if necessary. as we are just making the field required, we will not assign a new value
             dobRow.Fields = new List<FieldObject>() { dobField }; // this will eventually make more sense the more you do it. for now, just follow the pattern.
             dobRow.RowAction = "EDIT";
             dobForm.CurrentRow = dobRow;
@@ -237,14 +276,20 @@ namespace TacoScript.api
             return returnObject;
         }
 
-
-        private static List<string> PullSomething()
+        /* pulls information from patient_current_demographics. queries the database to return a single datarow as a List<string>. 
+         * List index [x] correspond to order of returned colum in the query */
+        private static List<string> PullSomething(string entity) // 'string entity' here corresponds to variable 'string clientID = inputObject.EntityID' in PullInfo()
         {
+            // instantiate new List<string> called 'something' that will contain client info from cache
             var something = new List<string>();
-            var connectionString = ConfigurationManager.ConnectionStrings["SQLMIS"].ConnectionString;
 
-            var commandText = $@"SELECT guarantor_name WHERE guarantor_id = '4000' FROM DataWarehouse.guarantor";
+            // connectionString is variable for Database Connection defined in Web.config <connectionStrings> section
+            var connectionString = ConfigurationManager.ConnectionStrings["CacheODBC"].ConnectionString;
 
+            // sql query that you will pass
+            var commandText = $@"SELECT date_of_birth , patient_name , patient_home_phone , STRING(patient_add_street_1, ', ', patient_add_city, ',' , patient_add_state_code, ' ',patient_add_zipcode) , primary_language_value FROM SYSTEM.patient_current_demographics WHERE PATID = '{entity}'";
+
+            // defines the connection and uses it
             using (var connection = new OdbcConnection(connectionString))
             {
                 connection.Open();
@@ -254,12 +299,19 @@ namespace TacoScript.api
                     {
                         while (reader.Read())
                         {
-                            something.Add(reader[0].ToString());
+                            // adds column data to the List<string>. Lists in C# begin at index 0
+                            something.Add(reader[0].ToString()); // corresponds to date_of_birth
+                            something.Add(reader[1].ToString()); // patient_name
+                            something.Add(reader[2].ToString()); // patient_home_phone
+                            something.Add(reader[3].ToString()); // STRING(address stuff)
+                            something.Add(reader[4].ToString()); // language
                         }
                     }
                 }
                 connection.Close();
+                // connection closed 
             }
+            // returns List<string> 'something' that we can call in PullInfo() when we invoke PullSomething() method
             return something;
         }
     }
