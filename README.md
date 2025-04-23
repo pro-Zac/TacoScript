@@ -85,5 +85,35 @@ To make the address importable into myAvatar, we add "https://" to the front of 
 
 #### Deploying the script in myAvatar
 
+I like to push the WSDL to the README in git, so it can be found easily. <br>
+Once you have the WSDL, go to Form Designer for the Testvelope III Return of the Test form (it's dumb. I am sorry).<br>
+<br>
+Click on the Edit link in the ScriptLink section on the left side of Form Designer.<br>
+![image](https://github.com/user-attachments/assets/6b490a74-7085-4b28-ba67-66b579e97ade)
+
+Then, import the WSDL in the window that opens, ensuring that it is https!<br>
+![image](https://github.com/user-attachments/assets/8d2e264f-eed7-469d-ab9d-9a3dfaed5f09)
+
+Recall the parameters in the RunScript() method here: <br>
+![image](https://github.com/user-attachments/assets/c3ff8cb9-3a3f-4198-b87e-928a6dbd1e15)
+
+These are the parameters that you will enter in Form Designer. Since we want the Date of Birth field to be required when the form loads, then we will select TacoScript from the Available Scripts dropdown in Form Load, and then type "require" in the script parameter text field as such: <br>
+![image](https://github.com/user-attachments/assets/545270ed-8799-41cc-a976-c707bb6722ab)
+Since the field was not set as required in Form Definition, this will make it required on form load.<br>
+
+We will set "pullinfo" on the Do Something button in the form. When clicked, this will call the PullInfo() method in the script, pulling client name, date of birth, and other details into the Client Information textbox below.<br>
+To do this, retun to the main form view in Form Designer, and then click on the Do Something button. In the left column, you can see a ScriptLink setting for that field.<br>
+![image](https://github.com/user-attachments/assets/22ec5bb8-f024-4c66-8488-099737400b9e)
+
+Click on the link in that field to bring up the following window. Select TacoScript from the dropdown, and enter "pullinfo" into the textbox. Remember, you call the scripts with the text you pass as the parameter in the case statement in RunScript(), not necessarily the methods that perform the action themselves.<br>
+![image](https://github.com/user-attachments/assets/0dc1e53d-a649-47d6-8337-7d991178490b)
+
+
+
+
+
+
+
+
 
 
