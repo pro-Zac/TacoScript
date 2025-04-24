@@ -108,6 +108,10 @@ To do this, retun to the main form view in Form Designer, and then click on the 
 Click on the link in that field to bring up the following window. Select TacoScript from the dropdown, and enter "pullinfo" into the textbox. Remember, you call the scripts with the text you pass as the parameter in the case statement in RunScript(), not necessarily the methods that perform the action themselves.<br>
 ![image](https://github.com/user-attachments/assets/0dc1e53d-a649-47d6-8337-7d991178490b)
 
+We will do the same on the Configure Taco button.<br>
+![image](https://github.com/user-attachments/assets/a5a4a580-0384-4d70-a881-0338e6ab5f1f)
+
+When clicked, it will pull the value of the vairable we defined in the script to the field in question.
 
 
 
