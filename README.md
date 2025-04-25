@@ -30,7 +30,7 @@ So that the element numbers here...<br>
 ![image](https://github.com/user-attachments/assets/1d1dc115-df7b-4f09-9e12-8891bea1eebc)
 
 .. match up with the element numbers in the script<br>
-![image](https://github.com/user-attachments/assets/3470ab22-ae06-45ad-ba7f-0a578e77afc2)
+![image](https://github.com/user-attachments/assets/9240bfea-f268-4cd2-9793-c7a49bdda3f3)
 
 **At this point** you will open the file TacoScript.sln in the script directory<br>
 ![image](https://github.com/user-attachments/assets/7ed3595b-bdc6-4cd7-bbb0-73a563546a12)
@@ -113,6 +113,17 @@ We will do the same on the Configure Taco button.<br>
 
 When clicked, it will pull the value of the vairable we defined in the script to the field in question.
 
+So clicking the Do Something button gives us the client info that we pull in PullInfo() when it invokes the PullSomething() method on the currently selected client.<br>
+![image](https://github.com/user-attachments/assets/ee46b164-15b4-43b4-8c0a-569c97d5ddd9)
+
+And the CONFIGURE TACO button does the same, but based on the logic in the form without pulling any other data from the database.<br>
+![image](https://github.com/user-attachments/assets/34400894-46b6-48d4-96d8-949d18622d36)
+
+As you can see, when we pull dictionaries in ScriptLink, we end up with the dictionary codes, not the text/whatever else values in the system. In this case, we would have to switch/case the codes to the values that we want to acutally push. Try it if you're feeling up to it. I'm tired of working on this tutorial<br>
+
+#### Some additional resources
+
+If you're interested in learning more about C#, check out the basics with Bro Code on YouTube. Great tutorials delivered in under 5 minutes per video (https://www.youtube.com/watch?v=r3CExhZgZV8&list=PLZPZq0r_RZOPNy28FDBys3GVP2LiaIyP_).<br>
 
 
 
