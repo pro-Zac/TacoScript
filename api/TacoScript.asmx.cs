@@ -144,7 +144,7 @@ namespace TacoScript.api
                 }
             }
 
-            string taco;
+            string taco = "Taco not yet configured. Please select parameters for your deliciousness.";
             bool isAHorriblePerson = false; // we set this variable as flase initially so we can construct our logic below, if not, we would get an error for using an unassigned variable. mA will overwrite the initially assigned false value with whatever is returned from the form when the script is called
 
             // string vars need to equal the dictionary code in myAvatar, not the dictionary value, so we have to redefine these in the present scope. 
@@ -178,6 +178,17 @@ namespace TacoScript.api
                     taco = $"Morally upstanding pillar of righteousness, {clientNameField.FieldValue} wants one taco with {tacoToppings}, {cheese}, and NO SOUR CREAM.";
                 }
             }
+
+            // this is where we roll all of the preceding stuff together. Check 
+            tacoConfigField.Enabled = "0"; // enables the field. 1 == true and 0 == false
+            tacoConfigField.Required = "1"; // requires. same as above
+            tacoConfigField.FieldValue = taco; // will pull value of string 'taco' to the FieldValue of the tacoConfigField object that we defined above.
+            tacoConfigRow.Fields = new List<FieldObject>() { tacoConfigField }; // this will eventually make more sense the more you do it. for now, just follow the pattern.
+            tacoConfigRow.RowAction = "EDIT";
+            tacoConfigForm.CurrentRow = tacoConfigRow;
+            tacoConfigForm.CurrentRow.ParentRowId = "0";
+
+            returnObject.Forms = new List<FormObject>() { tacoConfigForm };
 
             return returnObject;
         }
