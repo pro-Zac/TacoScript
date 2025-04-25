@@ -75,10 +75,6 @@
       <DependentUpon>TacoScript.asmx</DependentUpon>
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="ClassLibs\FieldObject.cs" />
-    <Compile Include="ClassLibs\FormObject.cs" />
-    <Compile Include="ClassLibs\OptionObject2015.cs" />
-    <Compile Include="ClassLibs\RowObject.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -91,6 +87,13 @@
       <DependentUpon>Web.config</DependentUpon>
     </None>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Libs\Libs.csproj">
+      <Project>{a2450ad2-9b10-48f1-8f04-ee275dd7b56f}</Project>
+      <Name>Libs</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

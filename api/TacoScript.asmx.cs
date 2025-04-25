@@ -78,7 +78,7 @@ namespace TacoScript.api
             // basically, this here states the current database row is the one you're calling up and modifying. just copy verbatim
             RowObject row = inputObject.Forms[0].CurrentRow;
 
-            /* If you want to modify data in a form with ScriptLink, you MUST instantiate the FieldObject, RowObject, and FormObject for EACH field you are modifying
+            /* If you want to modify data in a form with ScriptLink, you MUST instantiate the FieldObject, RowObject, and FormObject for EACH field you are modifying.
              * In the envelope provided, we will require both the Date of Birth field and the Client Info and Stuff field in the form. If you want to add more fields to require, 
              * then follow the same format as these */
             // instntiating the field, row, and form objects for the client name field, as we intend to modify it via ScriptLink
@@ -112,11 +112,11 @@ namespace TacoScript.api
                         clientNameForm.FormId = inputObject.Forms[0].FormId;
                         clientNameForm.MultipleIteration = inputObject.Forms[0].MultipleIteration;
                         break;
-                    /* myAvatar form designer truncates the trailing 0 from the below element number (shows "963.2" in the system). It is dumb. 
-                     * If you have a field number that ends in a .x where x is any number, ScriptLink will require the trailing 0 or it won't match the field you 
+                    /* myAvatar form designer adds a trailing 0 from the below element number (shows "963.20" in the system). It is dumb. 
+                     * If you have a field number that ends in a .x where x is any number, ScriptLink require you to drop the trailing 0 or it won't match the field you 
                      * think you're trying to match to and it'll take hours from your life as you go
                      * insane wondering why nothing works and the logic checks out and it should work dammit. ask me how i know \(>_< )/    */
-                    case "963.20":
+                    case "963.2":
                         clientInfoField = field;
                         clientInfoRow.RowId = row.RowId;
                         clientInfoForm.FormId = inputObject.Forms[0].FormId;
@@ -129,14 +129,14 @@ namespace TacoScript.api
                     case "948.29":
                         tacoToppings = field.FieldValue; // same here
                         break;
-                    case "948.30": // same trailing 0 truncation in mA. Note: in ScriptLink, 948.30 is not the same as 948.3
+                    case "948.3": // same trailing 0 truncation in ScriptLink. Note: in ScriptLink 948.30 is not the same as 948.3
                         sourCream = field.FieldValue;
                         break;
                     case "948.32":
                         cheese = field.FieldValue;
                         break;
                     case "963.21":
-                        tacoConfigField = field; // as contrasted with above, we are just assigning this variable as a FieldObject "field". We can pull the FieldValue of tacoConfigField elsewhere
+                        tacoConfigField = field; // as contrasted with above, we are just assigning this variable as a FieldObject "field". We can pull the FieldValue of tacoConfigField object elsewhere
                         tacoConfigRow.RowId = row.RowId;
                         tacoConfigForm.FormId = inputObject.Forms[0].FormId;
                         tacoConfigForm.MultipleIteration = inputObject.Forms[0].MultipleIteration;
@@ -144,7 +144,7 @@ namespace TacoScript.api
                 }
             }
 
-            string taco = "Taco not yet configured. Please select parameters for your deliciousness.";
+            string taco = "Pls configure the taco";
             bool isAHorriblePerson = false; // we set this variable as flase initially so we can construct our logic below, if not, we would get an error for using an unassigned variable. mA will overwrite the initially assigned false value with whatever is returned from the form when the script is called
 
             // string vars need to equal the dictionary code in myAvatar, not the dictionary value, so we have to redefine these in the present scope. 
@@ -156,7 +156,7 @@ namespace TacoScript.api
             {
                 isAHorriblePerson = false;
             }
-            // if a field in a form is empty, it does not rerun as null, it returns as empty in C#, which can be calulated
+            // if a field in a form is empty, it does not return as null, it returns as empty in C#, which can be calulated
             if (string.IsNullOrEmpty(sourCream))
             {
                 isAHorriblePerson = false;
@@ -167,7 +167,7 @@ namespace TacoScript.api
                 if (likeTacos == "5")
                 {
                     // $ denotes an interpolated string. you can add your variables with curly braces around them 
-                    taco = $"Horrible human being {clientNameField.FieldValue} wants one taco with {tacoToppings}, {cheese}, and sour cream.";
+                    taco = $"Horrible human being and degenerate, {clientNameField.FieldValue}, wants one taco with {tacoToppings}, {cheese}, and sour cream.";
                 }   
             }
             // !variableName is the shorthand for != or == false for bools
@@ -179,11 +179,9 @@ namespace TacoScript.api
                 }
             }
 
-            // this is where we roll all of the preceding stuff together. Check 
-            tacoConfigField.Enabled = "0"; // enables the field. 1 == true and 0 == false
-            tacoConfigField.Required = "1"; // requires. same as above
-            tacoConfigField.FieldValue = taco; // will pull value of string 'taco' to the FieldValue of the tacoConfigField object that we defined above.
-            tacoConfigRow.Fields = new List<FieldObject>() { tacoConfigField }; // this will eventually make more sense the more you do it. for now, just follow the pattern.
+            // set fieldvalue to variable taco per logic
+            tacoConfigField.FieldValue = taco;
+            tacoConfigRow.Fields = new List<FieldObject>() { tacoConfigField };
             tacoConfigRow.RowAction = "EDIT";
             tacoConfigForm.CurrentRow = tacoConfigRow;
             tacoConfigForm.CurrentRow.ParentRowId = "0";
@@ -196,55 +194,46 @@ namespace TacoScript.api
 
         private static OptionObject2015 PullInfo(OptionObject2015 inputObject)
         {
-            // invokes CopyObject() method to copy inputObject back to ReturnObject
-            OptionObject2015 returnObject = CopyObject(inputObject); 
+            OptionObject2015 returnObject = CopyObject(inputObject);
             RowObject row = inputObject.Forms[0].CurrentRow;
 
-            // same as above. we instantiate Field, Row, and Form Objects for the element we wish to modify with ScriptLink.
-            FieldObject textField = new FieldObject();
-            RowObject textRow = new RowObject();
-            FormObject textForm = new FormObject();
+            FieldObject clientInfoField = new FieldObject();
+            RowObject clientInfoRow = new RowObject();
+            FormObject clientInfoForm = new FormObject();
 
-            // this is the ID for the currently selected client
-            string clientID = inputObject.EntityID; 
-
+            string clientInfo = null;
+            string entity = returnObject.EntityID;
             foreach (FieldObject field in row.Fields)
             {
                 switch (field.FieldNumber)
                 {
-                    case "963.20":
-                        textField = field;
-                        textRow.RowId = row.RowId;
-                        textForm.FormId = inputObject.Forms[0].FormId;
-                        textForm.MultipleIteration = inputObject.Forms[0].MultipleIteration;
+                    // same thing as above. you drop the trailing 0 from form designer to here
+                    case "963.2":
+                        clientInfoField = field;
+                        clientInfoRow.RowId = row.RowId;
+                        clientInfoForm.FormId = inputObject.Forms[0].FormId;
+                        clientInfoForm.MultipleIteration = inputObject.Forms[0].MultipleIteration;
                         break;
                 }
             }
 
-            try
-            {
-                // invokes PullSomething() as defined below on current clientID
-                List<string> something = PullSomething(clientID);
+            // invokes PullSomething() method defined below for current client selected, sets the returned List<string> from PullSomething to local List<string> object called pulledInfo
+            List<string> pulledInfo = PullSomething(entity);
+            // concatenates the strings in pulledInfo with semicolons separating them. Recall that PullSomething() returns a List<string> with 4 strings total, indexed 0 to 3.
+            clientInfo = pulledInfo[0] + "; " + pulledInfo[1] + "; " + pulledInfo[2] + "; " + pulledInfo[3];
+            clientInfoField.Enabled = "1";
+            clientInfoField.Required = "0";
+            // sets FieldValue of object clientInfoField to string clientInfo, which we defined on line 223
+            clientInfoField.FieldValue = clientInfo;
+            // if this stuff below looks confusing, that's because it is. Just follow the pattern for returning data modified with ScriptLink to a field and you'll be fine. 
+            clientInfoRow.Fields = new List<FieldObject>() { clientInfoField };
+            clientInfoRow.RowAction = "EDIT";
+            clientInfoForm.CurrentRow = clientInfoRow;
+            clientInfoForm.CurrentRow.ParentRowId = "0";
 
-                // push each string in List<string> something to textField 
-                textField.FieldValue = something[0] + something[1] + something[2] + something[3] + something[4];
-                textRow.Fields = new List<FieldObject>() { textField }; 
-                textRow.RowAction = "EDIT";
-                textForm.CurrentRow = textRow;
-                textForm.CurrentRow.ParentRowId = "0";
-
-                returnObject.Forms = new List<FormObject>() { textForm };
-            }
-
-            // catch in case something doesn't work right
-            catch (ArgumentNullException)
-            {
-                returnObject.ErrorCode = 1;
-                returnObject.ErrorMesg = "whoopsie, something went wrong!";
-                return returnObject;
-            }
-
+            returnObject.Forms = new List<FormObject>() { clientInfoForm };
             return returnObject;
+
         }
 
         // Method to require feilds in a form. Fields are identified in the foreach() loop by field number.
