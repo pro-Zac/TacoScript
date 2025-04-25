@@ -123,7 +123,11 @@ As you can see, when we pull dictionaries in ScriptLink, we end up with the dict
 
 #### Some additional resources
 
-If you're interested in learning more about C#, check out the basics with Bro Code on YouTube. Great tutorials delivered in under 5 minutes per video (https://www.youtube.com/watch?v=r3CExhZgZV8&list=PLZPZq0r_RZOPNy28FDBys3GVP2LiaIyP_).<br>
+If you're interested in learning more about C#, check out the basics with **Bro Code** on YouTube. Great tutorials delivered in under 5 minutes per video (https://www.youtube.com/watch?v=r3CExhZgZV8&list=PLZPZq0r_RZOPNy28FDBys3GVP2LiaIyP_).<br>
+<br>
+Also, **RarelySimple** blog is specific to ScriptLink development, though he starts to get into the weeds too much with unit testing eventually. His beginning articles are very helpful with getting set up (https://rarelysimpleblog.wordpress.com/2020/02/04/creating-your-first-myavatar-scriptlink-api-using-c/)<br>.
+
+
 
 
 
