@@ -45,6 +45,19 @@ So that the element numbers here...<br>
 If prompted to install the workload for ASP.NET web development, do so.<br> Visual Studio will restart upon installation and reload your ScriptLink solution.<br>
 ![image](https://github.com/user-attachments/assets/e9e86c55-6365-4340-a95b-0c7c4052243e)
 
+**Also**, you will likely be missing the ClassLibs reference in you solution. To add the reference, and get rid of this error...<br>
+<br>
+![image](https://github.com/user-attachments/assets/0e71bcf7-555b-4d0c-9afc-eae78f32d5df)
+
+Right-click on References and click Add Reference>.<br>
+<br>
+![image](https://github.com/user-attachments/assets/50d669ef-94bb-4a02-a1fa-149afc0ac989)
+
+If the Class Libraries project doesn't load (sucks, but it happens sometimes), then click Projects/Solution. If it is there, you can add from there. If not, you'll have to click Browse and then select the ClassLibs directory.<br>
+<br>
+![image](https://github.com/user-attachments/assets/32119a8c-4460-49a1-8576-077fe915cf3c)
+
+
 *End Editor's Note*<br>
 
 It will open up the solution containing the script. From there, you will edit the field.FieldNumber in **every** switch loop that you find so they will match the numbers in Form and Table Documentation in your system.<br>
