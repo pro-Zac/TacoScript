@@ -35,6 +35,12 @@ So that the element numbers here...<br>
 **At this point** you will open the file TacoScript.sln in the script directory<br>
 ![image](https://github.com/user-attachments/assets/7ed3595b-bdc6-4cd7-bbb0-73a563546a12)
 
+*Note:* Upon opening the script, you may need to install additional components and packages for the solution. Visual Studio will typically prompt you regarding the missing components. For instance, on this system, I did not yet have the workload for ASP.NET web development (essentially, what ScriptLink is), and Visual Studio prompted me to install these components locally.<br>
+![image](https://github.com/user-attachments/assets/a657b9e0-3d54-4ee4-9936-782fe8428e0b)
+
+If prompted to install the workload for ASP.NET web development, do so.<br> Visual Studio will restart upon installation and reload your ScriptLink solution.<br>
+![image](https://github.com/user-attachments/assets/e9e86c55-6365-4340-a95b-0c7c4052243e)
+
 It will open up the solution containing the script. From there, you will edit the field.FieldNumber in **every** switch loop that you find so they will match the numbers in Form and Table Documentation in your system.<br>
 <br>
 The variables in the ScriptLink solution that I wrote don't always line up with the names in Form and Table Documentation, but I tried to keep it fairly consistent. <br>
