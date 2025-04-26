@@ -53,9 +53,17 @@ Right-click on References and click Add Reference>.<br>
 <br>
 ![image](https://github.com/user-attachments/assets/50d669ef-94bb-4a02-a1fa-149afc0ac989)
 
-If the Class Libraries project doesn't load (sucks, but it happens sometimes), then click Projects/Solution. If it is there, you can add from there. If not, you'll have to click Browse and then select the ClassLibs directory.<br>
+Then click on Projets on the left, and then click to add the ClassLibs project as a reference to the main TacoScript project.<br>
+<br>
+![image](https://github.com/user-attachments/assets/6aa02598-ecc8-4b4e-a788-4c508dca5da6)
+
+If you still get a missing reference error, close Visual Studio and then reopen your solution. It should be gone at that point.<br>
+<br>
+Also, if the Class Libraries project doesn't load (sucks, but it happens sometimes), then click Projects/Solution. If it is there, you can add from there. If not, you'll have to click Browse and then select the ClassLibs directory.<br>
 <br>
 ![image](https://github.com/user-attachments/assets/32119a8c-4460-49a1-8576-077fe915cf3c)
+
+
 
 
 *End Editor's Note*<br>
